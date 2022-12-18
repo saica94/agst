@@ -1,4 +1,4 @@
-# newRead  
+# Outline  
 パソコンの設定を変更し、パフォーマンスを向上させます。
   
 ## Description  
