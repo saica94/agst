@@ -31,5 +31,4 @@ Save the latest version currently available from Release to your computer.
 After that, unzip the file and run "AGST.exe" on your computer as an administrator.  
 Click the "自動設定開始" button and everything will be done automatically.　　
   
-### *  
-Translation was done at DeepL.
+*Translation was done at DeepL*
