@@ -1,12 +1,22 @@
-﻿# Auto Gaming Setting Tool Ver.GUI-1.1.1
+﻿# Auto Gaming Setting Tool Ver.GUI-1.1.2
 
 # 管理者権限の確認
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $bool_admin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 # アセンブリの読み込み
-[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
-[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+try{
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+}catch{
+    $msgBoxInput = [System.Windows.Forms.MessageBox]::Show("Error: 必要なアセンブリをロードできませんでした。`r`n[System.Drawing],[System.Windows.Forms]が読み込めませんでした。")
+    exit
+}
+
+if(-not $bool_admin){
+    $msgBoxInput = [System.Windows.Forms.MessageBox]::Show("管理者権限で起動されていない為、実行できません。`r`n管理者権限で実行してください","エラー","OK","Error")
+    exit
+}
 
 # 先に関数定義をしたくないので
 $SKIP=$true;iex ((gc $MyInvocation.InvocationName|%{
@@ -51,20 +61,27 @@ $Privacy_Key1 = "TailoredExperiencesWithDiagnosticDataEnabled"
 
 # フォームの設定
 $Form = New-Object System.Windows.Forms.Form
+$Form.BackColor = [System.Drawing.Color]::FromArgb(45,45,48)
+$Form.ForeColor = "White"
 $Form.Size = New-Object System.Drawing.Size(390,310)
-$Form.Text = "Auto Gaming Setting Tool Ver1.1.0"
+$Form.Text = "Auto Gaming Setting Tool Ver1.1.2"
 $Form.MaximizeBox = $false
 $Form.MinimizeBox = $false
 $Form.FormBorderStyle = "Fixed3D"
 $Form.ShowIcon = $false
+$Form.AutoScaleMode = "None"
+$Form.StartPosition = "CenterScreen"
 
 # ボタンの設定
 $Button = New-Object System.Windows.Forms.Button
 $Button.Location = New-Object System.Drawing.Point(5,107)
 $Button.Size = New-Object System.Drawing.Size(360,30)
 $Button.Text = "自動設定開始"
-$Form.Controls.Add($Button)
 $Button.Add_Click({Btn_Click})
+$Button.ForeColor = "White"
+$Button.BackColor = [System.Drawing.Color]::FromArgb(65,65,70)
+$Button.FlatStyle = "Flat"
+$Form.Controls.Add($Button)
 
 # ラジオボックスの設定
  # マウス加速
@@ -73,16 +90,19 @@ $Mouse_acc = New-Object System.Windows.Forms.GroupBox
 $Mouse_acc.Location = New-Object System.Drawing.Point(5,5)
 $Mouse_acc.Size = New-Object System.Drawing.Size(175,100)
 $Mouse_acc.Text = "マウス加速設定"
+$Mouse_acc.ForeColor = "White"
  # ラジオボタン配置
 $ON = New-Object System.Windows.Forms.RadioButton
 $ON.Location = New-Object System.Drawing.Point(10,15)
 $ON.Size = New-Object System.Drawing.Size(100,30)
 $ON.Text = "マウス加速-ON"
+$ON.FlatStyle = "Popup"
 $OFF = New-Object System.Windows.Forms.RadioButton
 $OFF.Location = New-Object System.Drawing.Point(10,40)
 $OFF.Size = New-Object System.Drawing.Size(110,30)
 $OFF.Checked = $True
 $OFF.Text = "マウス加速-OFF"
+$OFF.FlatStyle = "Popup"
 
  # タスクバー変更
  # グループの設定
@@ -90,21 +110,24 @@ $TaskBar_Size = New-Object System.Windows.Forms.GroupBox
 $TaskBar_Size.Location = New-Object System.Drawing.Point(185,5)
 $TaskBar_Size.Size = New-Object System.Drawing.Size(180,100)
 $TaskBar_Size.Text = "タスクバー設定"
+$TaskBar_Size.ForeColor = "White"
  # ラジオボタン配置
 $LARGE = New-Object System.Windows.Forms.RadioButton
 $LARGE.Location = New-Object System.Drawing.Point(10,15)
 $LARGE.Size = New-Object System.Drawing.Size(120,30)
 $LARGE.Text = "タスクバーサイズ：大"
+$LARGE.FlatStyle = "Popup"
 $MEDIUM = New-Object System.Windows.Forms.RadioButton
 $MEDIUM.Location = New-Object System.Drawing.Point(10,40)
 $MEDIUM.Size = New-Object System.Drawing.Size(120,30)
 $MEDIUM.Text = "タスクバーサイズ：中"
 $MEDIUM.Checked = $True
+$MEDIUM.FlatStyle = "Popup"
 $SMALL = New-Object System.Windows.Forms.RadioButton
 $SMALL.Location = New-Object System.Drawing.Point(10,65)
 $SMALL.Size = New-Object System.Drawing.Size(120,30)
 $SMALL.Text = "タスクバーサイズ：小"
-
+$SMALL.FlatStyle = "Popup"
 # グループにラジオボタンを入れる
 $Mouse_acc.Controls.AddRange(@($ON,$OFF))
 $TaskBar_Size.Controls.AddRange(@($LARGE,$MEDIUM,$SMALL))
@@ -113,29 +136,23 @@ $Form.Controls.Add($TaskBar_Size)
 
 # テキストボックスの設定
 $TextBox = New-Object System.Windows.Forms.RichTextbox
+$TextBox.BackColor = [System.Drawing.Color]::FromArgb(45,45,48)
 $TextBox.Location = New-Object System.Drawing.Point(5,140)
 $TextBox.Size = New-Object System.Drawing.Size(360,120)
 $TextBox.Multiline = $True
 $TextBox.ScrollBars = [Windows.Forms.ScrollBars]::Vertical
+$TextBox.BorderStyle = "Fixed3D"
 $Form.Controls.Add($TextBox)
-$TextBox.SelectionColor = "Red"
-if($bool_admin){
-    $TextBox.AppendText("管理者権限で実行されています。`r`n")
-} else {
-    $TextBox.AppendText("管理者権限で起動されていない為、一部の設定を変更できません。`r`n")
-    $TextBox.SelectionColor = "Red"
-    $TextBox.AppendText("全ての設定を正しく変更する為に、管理者権限で実行しなおして下さい。`r`n")
-}
+$TextBox.SelectionColor = "White"
 
 # フォームの表示
 $Form.Icon = $MyIcon
-$Form.Add_Shown({$Form.Activate()})
-$DialogResult = $Form.ShowDialog()
+$Form.ShowDialog()
 
 ####FuncDef
 function Btn_Click(){
-    $TextBox.SelectionColor = "Black"
     # Google ChromeのDL＆インストール
+    $TextBox.ForeColor = "White"
     $TextBox.AppendText("Google Chrome のダウンロードを行います。`r`n")
     $Path = $env:TEMP
     $Installer = "chrome_installer.exe"

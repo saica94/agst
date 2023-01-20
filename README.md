@@ -37,7 +37,3 @@ After that, unzip the file and run "AGST.exe" on your computer as an **_administ
 Click the "自動設定開始" button and everything will be done automatically.　　
   
 *Translation was done at DeepL*
-  
-### ScreenShot  
-![image](https://user-images.githubusercontent.com/105745241/209775400-1f2fb85f-1486-4c77-8a9b-3e979f355c5b.png) ![image](https://user-images.githubusercontent.com/105745241/209775548-9b556c65-6d61-4802-a2f2-5b06c79bfa9d.png)
-
