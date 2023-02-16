@@ -14,8 +14,13 @@ try{
     exit
 }
 
+$exePath = (Get-Process AGST).Path
+
 if(-not $bool_admin){
-    $msgBoxInput = [System.Windows.Forms.MessageBox]::Show("管理者権限で起動されていない為、実行できません。`r`n管理者権限で実行してください","エラー","OK","Error")
+    $msgBoxInput = [System.Windows.Forms.MessageBox]::Show("管理者権限で起動されていない為、実行できません。`r`n管理者権限で実行しますか？","確認","YesNo","Question","Button2")
+    if($msgBoxInput -eq "Yes"){
+        Start-Process -FilePath $exePath -Verb runAs
+    }
     exit
 }
 
